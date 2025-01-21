@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Random Acts of Kindness</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: #fff;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: linear-gradient(to bottom right, #ff6f00, #ff0000);
+      overflow: hidden;
+    }
+    .container {
+      background-color: rgba(255, 255, 255, 0.1);
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+      max-width: 400px;
+      width: 90%;
+      animation: glow 2s infinite alternate;
+    }
+    @keyframes glow {
+      0% {
+        box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+      }
+      100% {
+        box-shadow: 0 0 40px rgba(255, 255, 255, 0.8);
+      }
+    }
+    h1 {
+      font-size: 32px;
+      margin-bottom: 20px;
+      text-align: center;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    }
+    #actDisplay {
+      font-size: 24px;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    button {
+      background-color: #ff9800;
+      border: none;
+      color: #fff;
+      padding: 10px 20px;
+      font-size: 16px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      display: block;
+      margin: 0 auto 20px;
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+    }
+    button:hover {
+      background-color: #f57c00;
+    }
+    #counter {
+      font-size: 18px;
+      text-align: center;
+    }
+    .act-history {
+      margin-top: 20px;
+      text-align: center;
+    }
+    .act-history p {
+      margin: 5px;
+    }
+    #timer {
+      font-size: 20px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Random Acts of Kindness</h1>
+    <button onclick="generateAndDisplayAct()">Generate Random Act</button>
+    <div id="actDisplay"></div>
+    <button onclick="performAct()">Accomplished</button>
+    <button onclick="shareAct()">Share Act of Kindness</button>
+    <button onclick="resetCounter()">Reset Counter</button>
+    <button onclick="resetTimer()">Reset Timer</button>
+    <div>
+      <p id="counter">Acts of Kindness Counter: 0</p>
+    </div>
+    <div class="act-history">
+      <p>Recent Acts:</p>
+      <div id="actHistory"></div>
+    </div>
+    <div id="timer"></div>
+  </div>
+
+  <!-- Audio element -->
+  <audio id="soundEffect">
+    <source src="assets/ding.mp3" type="audio/mpeg">
+    Your browser does not support the audio element.
+  </audio>
+
+  <script>
+    const actsOfKindness = [
+      "Compliment someone.",
+      "Hold the door open for someone.",
+      "Donate to a charity.",
+      "Help someone carry their groceries.",
+      "Write a thank you note to someone who deserves it.",
+      "Volunteer at a local shelter.",
+      "Pay for someone's coffee or meal.",
+      "Listen to someone who needs to talk.",
+      "Offer to babysit for a friend or family member for free.",
+      "Leave positive notes in public places."
+    ];
+
+    let kindnessCounter = 0;
+    const actHistory = [];
+    let timerInterval;
+
+    function generateAndDisplayAct() {
+      const randomIndex = Math.floor(Math.random() * actsOfKindness.length);
+      const randomAct = actsOfKindness[randomIndex];
+      document.getElementById('actDisplay').innerText = randomAct;
+      document.getElementById('actDisplay').style.display = 'block';
+      actHistory.unshift(randomAct);
+      if (actHistory.length > 5) {
+        actHistory.pop();
+      }
+      displayActHistory();
+      resetTimer();
+      
+      // Change background color randomly
+      const randomColor = '#' + Math.floor(Math.random()*16777215).toString(16);
+      document.body.style.backgroundColor = randomColor;
+
+      // Play sound effect
+      playSoundEffect();
+    }
+
+    function performAct() {
+      kindnessCounter++;
+      document.getElementById('counter').innerText = `Acts of Kindness Counter: ${kindnessCounter}`;
+
+      // Animate counter increase
+      document.getElementById('counter').style.transform = 'scale(1.1)';
+      setTimeout(() => {
+        document.getElementById('counter').style.transform = 'scale(1)';
+      }, 300);
+
+      // Play sound effect
+      playSoundEffect();
+    }
+
+    function shareAct() {
+      const act = document.getElementById('actDisplay').innerText;
+      // Facebook share link
+      const shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}&quote=${encodeURIComponent(act)}`;
+      window.open(shareUrl, '_blank');
+    }
+
+    function resetCounter() {
+      kindnessCounter = 0;
+      document.getElementById('counter').innerText = `Acts of Kindness Counter: ${kindnessCounter}`;
+    }
+
+    function displayActHistory() {
+      const actHistoryElement = document.getElementById('actHistory');
+      actHistoryElement.innerHTML = '';
+      actHistory.forEach((act, index) => {
+        const paragraph = document.createElement('p');
+        paragraph.textContent = `${index + 1}. ${act}`;
+        actHistoryElement.appendChild(paragraph);
+      });
+    }
+
+    function playSoundEffect() {
+      const soundEffect = document.getElementById('soundEffect');
+      soundEffect.currentTime = 0;
+      soundEffect.play();
+    }
+
+    function resetTimer() {
+      clearInterval(timerInterval);
+      const durationInSeconds = 7 * 60 * 60;
+      startTimer(durationInSeconds);
+    }
+
+    function startTimer(duration) {
+      let timer = duration;
+      const timerDisplay = document.getElementById('timer');
+      timerDisplay.style.display = 'block';
+      timerInterval = setInterval(() => {
+        const hours = Math.floor(timer / 3600);
+        const minutes = Math.floor((timer % 3600) / 60);
+        const seconds = timer % 60;
+        timerDisplay.textContent = `${hours < 10  ? '0' : ''}${hours}:${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+        if (--timer < 0) {
+          clearInterval(timerInterval);
+          timerDisplay.style.display = 'none';
+        }
+      }, 1000);
+    }
+  </script>
+</body>
+</html>
+

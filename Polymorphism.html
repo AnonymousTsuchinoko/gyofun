@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carbon Footprint Calculator</title>
+    <style>
+        /* style here being a bit too much */
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #4CAF50, #FFEB3B);
+            margin: 0;
+            padding: 20px;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+
+        h1 {
+            color: #fff;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+
+        form {
+            background: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            max-width: 500px;
+            width: 100%;
+            transition: transform 0.3s;
+        }
+
+        form:hover {
+            transform: translateY(-10px);
+        }
+
+        label {
+            display: block;
+            margin-top: 20px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        input[type="number"],
+        select {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            margin-bottom: 20px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box;
+            transition: border-color 0.3s;
+        }
+
+        input[type="number"]:focus,
+        select:focus {
+            border-color: #27ae60;
+            outline: none;
+        }
+
+        button {
+            background: linear-gradient(45deg, #27ae60, #2ecc71);
+            color: #fff;
+            padding: 15px 20px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background 0.3s, transform 0.3s;
+            width: 100%;
+        }
+
+        button:hover {
+            background: linear-gradient(45deg, #2ecc71, #27ae60);
+            transform: scale(1.05);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .result {
+            background: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            margin-top: 20px;
+            max-width: 500px;
+            width: 100%;
+        }
+
+        .result h2 {
+            margin-top: 0;
+            color: #27ae60;
+        }
+
+        ul {
+            list-style-type: disc;
+            margin: 10px 0 0 20px;
+            padding: 0;
+        }
+
+        ul li {
+            margin-bottom: 10px;
+            color: #555;
+        }
+
+        @media (min-width: 768px) {
+            form, .result {
+                width: 600px;
+                margin: 0 auto;
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        .result {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+    </style>
+</head>
+<body>
+    <h1>Carbon Footprint Calculator</h1>
+    <form id="footprintForm">
+        <label for="activityType">Choose an activity:</label>
+        <select id="activityType" name="activityType">
+            <option value="Car">Car Travel</option>
+            <option value="Flight">Flight</option>
+            <option value="Electricity">Electricity Usage</option>
+        </select>
+        <div id="carInputs" class="hidden">
+            <label for="carMiles">Miles driven:</label>
+            <input type="number" id="carMiles" name="carMiles" min="1">
+            <label for="carType">Car type:</label>
+            <select id="carType" name="carType">
+                <option value="Gasoline">Gasoline</option>
+                <option value="Diesel">Diesel</option>
+                <option value="Electric">Electric</option>
+            </select>
+        </div>
+        <div id="flightInputs" class="hidden">
+            <label for="flightMiles">Miles flown:</label>
+            <input type="number" id="flightMiles" name="flightMiles" min="1">
+            <label for="flightClass">Class:</label>
+            <select id="flightClass" name="flightClass">
+                <option value="Economy">Economy</option>
+                <option value="Business">Business</option>
+                <option value="First">First</option>
+            </select>
+        </div>
+        <div id="electricityInputs" class="hidden">
+            <label for="kWh">Kilowatt hours used:</label>
+            <input type="number" id="kWh" name="kWh" min="1">
+            <label for="energySource">Energy source:</label>
+            <select id="energySource" name="energySource">
+                <option value="Coal">Coal</option>
+                <option value="NaturalGas">Natural Gas</option>
+                <option value="Renewable">Renewable</option>
+            </select>
+        </div>
+        <button type="submit">Calculate Footprint</button>
+    </form>
+    <div id="result" class="result hidden">
+        <h2>Carbon Footprint Result</h2>
+        <p id="footprint"></p>
+        <h3>Suggestions to Reduce Carbon Footprint</h3>
+        <ul id="suggestions"></ul>
+    </div>
+
+    <script>
+        class Activity {
+            constructor(name) {
+                if (this.constructor === Activity) {
+                    throw new Error("Cannot instantiate abstract class Activity");
+                }
+                this.name = name;
+            }
+
+            calculateFootprint() {
+                throw new Error("Method 'calculateFootprint()' must be implemented.");
+            }
+
+            getSuggestions() {
+                throw new Error("Method 'getSuggestions()' must be implemented.");
+            }
+        }
+
+        class CarTravel extends Activity {
+            constructor(miles, carType) {
+                super('Car Travel');
+                this.miles = miles;
+                this.carType = carType;
+            }
+
+            calculateFootprint() {
+                const emissionsPerMile = {
+                    'Gasoline': 0.411,
+                    'Diesel': 0.458,
+                    'Electric': 0.12 
+                };
+                return this.miles * emissionsPerMile[this.carType];
+            }
+
+            getSuggestions() {
+                return [
+                    'Carpool or use public transportation',
+                    'Switch to an electric or hybrid vehicle',
+                    'Maintain your vehicle for optimal efficiency'
+                ];
+            }
+        }
+
+        class Flight extends Activity {
+            constructor(miles, flightClass) {
+                super('Flight');
+                this.miles = miles;
+                this.flightClass = flightClass;
+            }
+
+            calculateFootprint() {
+                const emissionsPerMile = {
+                    'Economy': 0.2,
+                    'Business': 0.3,
+                    'First': 0.4
+                };
+                return this.miles * emissionsPerMile[this.flightClass];
+            }
+
+            getSuggestions() {
+                return [
+                    'Choose economy class',
+                    'Fly less by using video conferencing',
+                    'Offset your carbon emissions by supporting renewable energy projects'
+                ];
+            }
+        }
+
+        class ElectricityUsage extends Activity {
+            constructor(kWh, energySource) {
+                super('Electricity Usage');
+                this.kWh = kWh;
+                this.energySource = energySource;
+            }
+
+            calculateFootprint() {
+                const emissionsPerkWh = {
+                    'Coal': 2.2,
+                    'NaturalGas': 1.0,
+                    'Renewable': 0.05
+                };
+                return this.kWh * emissionsPerkWh[this.energySource];
+            }
+
+            getSuggestions() {
+                return [
+                    'Switch to renewable energy sources',
+                    'Use energy-efficient appliances',
+                    'Reduce your overall electricity consumption'
+                ];
+            }
+        }
+
+        class ActivityFactory {
+            static createActivity(type, ...args) {
+                switch(type) {
+                    case 'Car':
+                        return new CarTravel(...args);
+                    case 'Flight':
+                        return new Flight(...args);
+                    case 'Electricity':
+                        return new ElectricityUsage(...args);
+                    default:
+                        throw new Error('Unknown activity type');
+                }
+            }
+        }
+
+        const footprintForm = document.getElementById('footprintForm');
+        const activityTypeSelect = document.getElementById('activityType');
+        const carInputs = document.getElementById('carInputs');
+        const flightInputs = document.getElementById('flightInputs');
+        const electricityInputs = document.getElementById('electricityInputs');
+        const resultDiv = document.getElementById('result');
+        const footprintPara = document.getElementById('footprint');
+        const suggestionsUl = document.getElementById('suggestions');
+
+        activityTypeSelect.addEventListener('change', (event) => {
+            const activityType = event.target.value;
+            carInputs.classList.add('hidden');
+            flightInputs.classList.add('hidden');
+            electricityInputs.classList.add('hidden');
+            if (activityType === 'Car') {
+                carInputs.classList.remove('hidden');
+            } else if (activityType === 'Flight') {
+                flightInputs.classList.remove('hidden');
+            } else if (activityType === 'Electricity') {
+                electricityInputs.classList.remove('hidden');
+            }
+        });
+
+        footprintForm.addEventListener('submit', (event) => {
+            event.preventDefault();
+            const activityType = activityTypeSelect.value;
+            let activity;
+            if (activityType === 'Car') {
+                const miles = parseFloat(document.getElementById('carMiles').value);
+                const carType = document.getElementById('carType').value;
+                activity = ActivityFactory.createActivity('Car', miles, carType);
+            } else if (activityType === 'Flight') {
+                const miles = parseFloat(document.getElementById('flightMiles').value);
+                const flightClass = document.getElementById('flightClass').value;
+                activity = ActivityFactory.createActivity('Flight', miles, flightClass);
+            } else if (activityType === 'Electricity') {
+                const kWh = parseFloat(document.getElementById('kWh').value);
+                const energySource = document.getElementById('energySource').value;
+                activity = ActivityFactory.createActivity('Electricity', kWh, energySource);
+            }
+            const footprint = activity.calculateFootprint();
+            const suggestions = activity.getSuggestions();
+            resultDiv.classList.remove('hidden');
+            footprintPara.textContent = `${activity.name} carbon footprint: ${footprint.toFixed(2)} kg CO2`;
+            suggestionsUl.innerHTML = '';
+            suggestions.forEach(suggestion => {
+                const li = document.createElement('li');
+                li.textContent = suggestion;
+                suggestionsUl.appendChild(li);
+            });
+        });
+        /*(╬▔皿▔)╯┻━┻*/
+        activityTypeSelect.dispatchEvent(new Event('change'));
+    </script>
+</body>
+</html>

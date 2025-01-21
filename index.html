@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project</title>
+    <style>
+        body {
+            background-image: url('assets/background.png'); 
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #333;
+        }
+        .container {
+            max-width: 1200px;
+            margin: auto;
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        }
+        header {
+            text-align: center;
+            padding: 20px;
+        }
+        header img {
+            max-width: 150px;
+            display: block;
+            margin: 0 auto 10px;
+        }
+        .options {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .options ul {
+            list-style: none;
+            padding: 0;
+        }
+        .options li {
+            display: inline-block;
+            margin: 20px;
+            position: relative;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease;
+        }
+        .options li:hover {
+            transform: translateY(-5px);
+        }
+        .options a {
+            display: block;
+            text-decoration: none;
+            overflow: hidden;
+            width: 200px; 
+            height: 200px; 
+        }
+        .options a img {
+            width: 100%; 
+            height: auto;
+        }
+        .options a span {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 10px;
+            background-color: rgba(0, 0, 0, 0.5);
+            color: #fff;
+            text-align: center;
+            font-size: 14px;
+            transition: bottom 0.3s ease;
+        }
+        .options li:hover span {
+            bottom: -50px;
+        }
+        .sidebar {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="main-container">
+        <header>
+            <img src="assets/logo.png" alt="Logo">
+            <h1>Project</h1>
+        </header>
+        <section class="options">
+            <ul id="options-list">
+                <li>
+                    <a href="Asynchronous.html">
+                        <img src="assets/icon1.png" alt="Asynchronous: Stress Relief, maybe. ">
+                        <span>Asynchronous</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="Composition.html">
+                        <img src="assets/icon2.png" alt="Composition: To do list, sorta.">
+                        <span>Composition</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="Polymorphism.html">
+                        <img src="assets/icon3.png" alt="Polymorphism: Calculates CF.">
+                        <span>Polymorphism</span>
+                    </a>
+                </li>
+            </ul>
+        </section>
+        <aside class="sidebar">
+            <h2>By: Florence Jay Dalaodao</h2>
+        </aside>
+    </div>
+</body>
+</html>
